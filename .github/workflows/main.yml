@@ -1,0 +1,35 @@
+name: Build Android App Bundle
+
+on:
+  push:
+    branches: [ main ] # Kodunuzu 'main' dalına her gönderdiğinizde çalışır
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Capacitor and Build
+        run: |
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npx cap init Finara com.finara.app --web-dir .
+          npx cap add android
+          npx cap copy android
+
+      - name: Build AAB (Android App Bundle)
+        run: |
+          cd android
+          ./gradlew bundleRelease
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-bundle
+          path: android/app/build/outputs/bundle/release/app-release.aab
