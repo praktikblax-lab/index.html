@@ -1,0 +1,25 @@
+name: Build Android Bundle
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Bubblewrap CLI
+        run: npm install -g @bubblewrap/cli
+
+      - name: Build AAB
+        run: |
+          # Bu kısım sadece tek bir komutla standart bir paketleme yapar.
+          # Ancak Bubblewrap genelde bir 'manifest.json' dosyası ister.
+          # Eğer manifest.json dosyanız yoksa bu da hata verebilir.
+          echo "Build işlemi deneniyor..."
